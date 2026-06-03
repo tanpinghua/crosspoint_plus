@@ -16,8 +16,6 @@ hardware (~380KB RAM, single 48KB framebuffer, 800×480 monochrome E-Ink).
 > **Tested hardware:** this fork has only been tested on the Xteink **X4**. The
 > **X3** is supported upstream but **untested here** — use at your own risk.
 
-![CrossPoint Reader running on Xteink device](./docs/images/cover.jpg)
-
 ---
 
 ## What it does
