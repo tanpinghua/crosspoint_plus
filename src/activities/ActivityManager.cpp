@@ -8,6 +8,7 @@
 #include "boot_sleep/BootActivity.h"
 #include "boot_sleep/SleepActivity.h"
 #include "browser/OpdsBookBrowserActivity.h"
+#include "clock/ClockActivity.h"
 #include "home/CrashActivity.h"
 #include "home/FileBrowserActivity.h"
 #include "home/HomeActivity.h"
@@ -226,6 +227,8 @@ void ActivityManager::goHome(HomeMenuItem initialMenuItem) {
 }
 void ActivityManager::goToCrashReport() { replaceActivity(std::make_unique<CrashActivity>(renderer, mappedInput)); }
 
+void ActivityManager::goToClock() { replaceActivity(std::make_unique<ClockActivity>(renderer, mappedInput)); }
+
 void ActivityManager::pushActivity(std::unique_ptr<Activity>&& activity) {
   if (pendingActivity) {
     // Should never happen in practice
@@ -252,6 +255,8 @@ bool ActivityManager::isReaderActivity() const {
                      [](const auto& activity) { return activity->isReaderActivity(); }) ||
          (currentActivity && currentActivity->isReaderActivity());
 }
+
+bool ActivityManager::isClockActivity() const { return currentActivity && currentActivity->isClockActivity(); }
 
 bool ActivityManager::skipLoopDelay() const { return currentActivity && currentActivity->skipLoopDelay(); }
 

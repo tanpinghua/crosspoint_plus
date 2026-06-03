@@ -20,6 +20,7 @@
 #include "SdCardFontSystem.h"
 #include "SdFirmwareUpdateActivity.h"
 #include "SettingsList.h"
+#include "ClockOffsetActivity.h"
 #include "StatusBarSettingsActivity.h"
 #include "activities/network/WifiSelectionActivity.h"
 #include "activities/util/IntervalSelectionActivity.h"
@@ -27,13 +28,15 @@
 #include "fontIds.h"
 
 const StrId SettingsActivity::categoryNames[categoryCount] = {StrId::STR_CAT_DISPLAY, StrId::STR_CAT_READER,
-                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM};
+                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM,
+                                                              StrId::STR_CAT_CLOCK};
 
 void SettingsActivity::rebuildSettingsLists() {
   displaySettings.clear();
   readerSettings.clear();
   controlsSettings.clear();
   systemSettings.clear();
+  clockSettings.clear();
 
   // Pick up any fonts uploaded/deleted over the web server since the last
   // reader activity ran — otherwise the font-family picker shows stale list.
@@ -49,6 +52,8 @@ void SettingsActivity::rebuildSettingsLists() {
       controlsSettings.push_back(setting);
     } else if (setting.category == StrId::STR_CAT_SYSTEM) {
       systemSettings.push_back(setting);
+    } else if (setting.category == StrId::STR_CAT_CLOCK) {
+      clockSettings.push_back(setting);
     }
   }
 
@@ -66,6 +71,10 @@ void SettingsActivity::rebuildSettingsLists() {
   readerSettings.insert(readerSettings.begin() + 1,
                         SettingInfo::Action(StrId::STR_MANAGE_FONTS, SettingAction::DownloadFonts));
   readerSettings.push_back(SettingInfo::Action(StrId::STR_CUSTOMISE_STATUS_BAR, SettingAction::CustomiseStatusBar));
+  // Time zone uses the dedicated offset picker (UTC-labelled), so it's an action rather than a
+  // raw value. Placed before the time-format enum that the categorization loop added above.
+  clockSettings.insert(clockSettings.begin(),
+                       SettingInfo::Action(StrId::STR_TIMEZONE, SettingAction::SetClockTimezone));
 
   // Update currentSettings pointer and count for the active category
   switch (selectedCategoryIndex) {
@@ -80,6 +89,9 @@ void SettingsActivity::rebuildSettingsLists() {
       break;
     case 3:
       currentSettings = &systemSettings;
+      break;
+    case 4:
+      currentSettings = &clockSettings;
       break;
   }
   settingsCount = static_cast<int>(currentSettings->size());
@@ -173,6 +185,9 @@ void SettingsActivity::loop() {
       case 3:
         currentSettings = &systemSettings;
         break;
+      case 4:
+        currentSettings = &clockSettings;
+        break;
     }
     settingsCount = static_cast<int>(currentSettings->size());
   }
@@ -259,6 +274,9 @@ void SettingsActivity::toggleCurrentSetting() {
         break;
       case SettingAction::Language:
         startActivityForResult(std::make_unique<LanguageSelectActivity>(renderer, mappedInput), resultHandler);
+        break;
+      case SettingAction::SetClockTimezone:
+        startActivityForResult(std::make_unique<ClockOffsetActivity>(renderer, mappedInput), resultHandler);
         break;
       case SettingAction::None:
         // Do nothing

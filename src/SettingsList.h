@@ -242,13 +242,23 @@ inline std::vector<SettingInfo> getSettingsList(const SdCardFontRegistry* regist
                             StrId::STR_CUSTOMISE_STATUS_BAR),
         SettingInfo::Value(StrId::STR_CLOCK_UTC_OFFSET, &CrossPointSettings::clockUtcOffsetQ, {0, 104, 1},
                            "clockUtcOffsetQ", StrId::STR_CUSTOMISE_STATUS_BAR),
+        // Time format lives in the Clock settings tab (the X3 status-bar sub-menu toggles the
+        // same field independently via its own hardcoded item).
         SettingInfo::Enum(StrId::STR_CLOCK_FORMAT, &CrossPointSettings::clockFormat,
                           {StrId::STR_CLOCK_FORMAT_24H, StrId::STR_CLOCK_FORMAT_12H}, "clockFormat",
-                          StrId::STR_CUSTOMISE_STATUS_BAR),
+                          StrId::STR_CAT_CLOCK),
         // Persistence flag for NTP debounce. Resetting from the web UI forces a re-sync
         // on next WiFi connect, which is useful when crossing time zones.
         SettingInfo::Toggle(StrId::STR_CLOCK_SYNCED, &CrossPointSettings::clockHasBeenSynced, "clockHasBeenSynced",
                             StrId::STR_CUSTOMISE_STATUS_BAR),
+        // Clock activity state. Category STR_NONE_OPT keeps these out of every device settings tab
+        // and the web UI; they persist to JSON (keyed below) and are cycled from inside ClockActivity.
+        SettingInfo::Value(StrId::STR_NONE_OPT, &CrossPointSettings::clockOrientation, {0, 3, 1}, "clockOrientation"),
+        SettingInfo::Value(StrId::STR_NONE_OPT, &CrossPointSettings::clockFaceIndex,
+                           {0, CrossPointSettings::CLOCK_FACE_COUNT - 1, 1}, "clockFaceIndex"),
+        SettingInfo::Value(StrId::STR_NONE_OPT, &CrossPointSettings::clockSubAppIndex, {0, 3, 1}, "clockSubAppIndex"),
+        SettingInfo::Value(StrId::STR_NONE_OPT, &CrossPointSettings::clockTimerMinutes, {0, 99, 1},
+                           "clockTimerMinutes"),
     };
     // Only show tilt page turn setting when the QMI8658 IMU is present (X3)
     if (halTiltSensor.isAvailable()) {

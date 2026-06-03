@@ -187,6 +187,16 @@ class CrossPointSettings {
   // Set once an NTP sync succeeds. Used to skip re-syncing on every WiFi connect.
   // Resetting to 0 (e.g. via the web UI) forces a re-sync on next WiFi connect.
   uint8_t clockHasBeenSynced = 0;
+  // Clock activity (X4 NTP clock): screen orientation, independent of the reader's.
+  // 0 = portrait, 1 = landscape CW, 2 = inverted, 3 = landscape CCW (matches GfxRenderer::Orientation).
+  uint8_t clockOrientation = 0;
+  // Clock activity: index of the selected clock face, 0..CLOCK_FACE_COUNT-1. Cycled in-app.
+  uint8_t clockFaceIndex = 0;
+  static constexpr uint8_t CLOCK_FACE_COUNT = 2;
+  // Clock activity: last-used sub-app (0=Clock, 1=World Clock, 2=Stopwatch, 3=Timer). Restored on entry.
+  uint8_t clockSubAppIndex = 0;
+  // Clock activity: timer sub-app configured duration in minutes (0..99). Persists across sessions.
+  uint8_t clockTimerMinutes = 5;
   // Text rendering settings
   uint8_t extraParagraphSpacing = 1;
   uint8_t textAntiAliasing = 1;

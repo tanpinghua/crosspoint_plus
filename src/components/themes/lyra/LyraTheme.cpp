@@ -76,6 +76,9 @@ const uint8_t* iconForName(UIIcon icon, int size) {
         return HotspotIcon;
       case UIIcon::Bookmark:
         return BookmarkIcon;
+      case UIIcon::Clock:
+        // No dedicated clock glyph yet; reuse the "recent" (history) icon.
+        return RecentIcon;
       default:
         return nullptr;
     }

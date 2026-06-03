@@ -76,6 +76,7 @@ bool JsonSettingsIO::saveState(const CrossPointState& s, const char* path) {
   doc["recentSleepFill"] = s.recentSleepFill;
   doc["readerActivityLoadCount"] = s.readerActivityLoadCount;
   doc["lastSleepFromReader"] = s.lastSleepFromReader;
+  doc["lastSleepFromClock"] = s.lastSleepFromClock;
   doc["showBootScreen"] = s.showBootScreen;
 
   String json;
@@ -111,6 +112,7 @@ bool JsonSettingsIO::loadState(CrossPointState& s, const char* json) {
   }
   s.readerActivityLoadCount = doc["readerActivityLoadCount"] | static_cast<uint8_t>(0);
   s.lastSleepFromReader = doc["lastSleepFromReader"] | false;
+  s.lastSleepFromClock = doc["lastSleepFromClock"] | false;
   s.showBootScreen = doc["showBootScreen"] | true;
   return true;
 }
